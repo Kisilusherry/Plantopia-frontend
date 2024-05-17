@@ -1,21 +1,20 @@
-// src/components/PlantDetails.js
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { useParams } from 'react-router-dom';
 
-function PlantDetails() {
-  const { id } = useParams();
+const PlantDetails = ({ match }) => {
   const [plant, setPlant] = useState(null);
+  const { id } = match.params;
 
   useEffect(() => {
     const fetchPlantDetails = async () => {
       try {
-        const response = await axios.get(`/api/plants/${id}`);
-        setPlant(response.data.plant);
+        const response = await axios.get(`https://perenual.com/api/plants/${id}`);
+        setPlant(response.data);
       } catch (error) {
-        console.error(error);
+        console.error('Error fetching plant details:', error);
       }
     };
+
     fetchPlantDetails();
   }, [id]);
 
@@ -26,10 +25,11 @@ function PlantDetails() {
   return (
     <div>
       <h2>{plant.name}</h2>
-      <p>{plant.description}</p>
-      <p>{plant.price}</p>
+      <p>Description: {plant.description}</p>
+      <p>Price: {plant.price}</p>
+      {/* Add additional plant details here */}
     </div>
   );
-}
+};
 
 export default PlantDetails;

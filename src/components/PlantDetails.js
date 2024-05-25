@@ -1,35 +1,37 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 
-const PlantDetails = ({ match }) => {
+const API_KEY = 'sk-HSVc6647565408e5e5543'; // Include the API key directly
+
+function PlantDetail({ match }) {
   const [plant, setPlant] = useState(null);
-  const { id } = match.params;
 
   useEffect(() => {
-    const fetchPlantDetails = async () => {
+    const fetchPlantDetail = async () => {
       try {
-        const response = await axios.get(`https://perenual.com/api/plants/${id}`);
+        const response = await axios.get(`https://api.perennial.com/plants/${match.params.id}`, {
+          headers: {
+            'Authorization': `Bearer ${API_KEY}`
+          }
+        });
         setPlant(response.data);
       } catch (error) {
-        console.error('Error fetching plant details:', error);
+        console.error('There was an error fetching the plant details!', error);
       }
     };
 
-    fetchPlantDetails();
-  }, [id]);
+    fetchPlantDetail();
+  }, [match.params.id]);
 
-  if (!plant) {
-    return <div>Loading...</div>;
-  }
+  if (!plant) return <div>Loading...</div>;
 
   return (
     <div>
-      <h2>{plant.name}</h2>
-      <p>Description: {plant.description}</p>
-      <p>Price: {plant.price}</p>
-      {/* Add additional plant details here */}
+      <h1>{plant.name}</h1>
+      <p>{plant.description}</p>
+      <p>Price: ${plant.price}</p>
     </div>
   );
-};
+}
 
-export default PlantDetails;
+export default PlantDetail;
